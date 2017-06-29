@@ -1,0 +1,12 @@
+h1#title {
+  color: #666;
+}
+
+img {
+  width=200px;
+  height=200px;
+}
+
+.hide {
+  display: none;
+}

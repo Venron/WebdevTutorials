@@ -1,0 +1,17 @@
+li input {
+  display: none;
+}
+
+
+/* If <li> is in edit mode, do not display span (text) */
+
+li.edit span {
+  display: none;
+}
+
+
+/* If list is in edit mode, display the input */
+
+li.edit input {
+  display: initial;
+}
