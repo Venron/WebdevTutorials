@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <title>Theoretics</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <header>
+      <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h2 align="center">Theoretics of Web Development</h2>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <h3>Structure</h3>
+        <ol>
+          <li><a href="#how-the-internet-works-for-developers">How the Internet Works for Developers</a></li>
+          <ul>
+            <li><a href="#how-the-internet-works-for-developers-part1">Part 1</a></li>
+            <li><a href="#how-the-internet-works-for-developers-part2">Part 2</a></li>
+          </ul>
+          <li><a href="#what-makes-javascript-weird-and-awesome">What Makes JavaScript Weird... and AWESOME</a></li>
+          <ul>
+            <li><a href="#what-makes-javascript-weird-and-awesome-part1">Part 1</a></li>
+            <li><a href="#what-makes-javascript-weird-and-awesome-part2">Part 2</a></li>
+          </ul>
+        </ol>
+        <div id="how-the-internet-works-for-developers">
+          <h3>How the Internet Works for Developers</h3>
+          <br>
+          <h4 id="how-the-internet-works-for-developers-part1">Part 1</h4>
+          <p>
+            Bekannt.
+          </p>
+          <h4 id="how-the-internet-works-for-developers-part2">Part 2</h4>
+          <p>
+            <ul>
+              <li>LAMP = Linux, Apache, MySQL, PHP</li>
+              <li>Scaling</li>
+              <ul>
+                <li>Wenn zu viele User auf eine Webseite zugreifen, werden exakte Kopien der Seite auf verschiedene Server gelegt</li>
+                <li>Anschließend wird ein Load Balancer (auch: Frontend-Server) verwendet, um die Anfragen auf die verschiedenen Server zu verteilen, die dann jeweils die Requests verarbeiten (Wikipedia: Round-Robin wird auch zur Lastverteilung (load balancing)
+                  verwendet. Ziel der Lastverteilung ist es, mehrere gleichartige Ressourcen möglichst gleichmäßig zu beanspruchen.)</li>
+                <li>Der DNS-Eintrag für die Seite (z.b. google.com) zeigt nun auf die IP-Adresse des Load Balancers und nicht auf die eigentlichen Processing Servers</li>
+                <li>Scaling bedeutet also allgemein, nicht durch Aufstockung der Ressourcen auf <strong>einer</strong> Maschine zu skalieren, sondern durch das Hinzufügen neuer Server zu skalieren</li>
+                <li>Dazu kommt: es bedarf nun einem Deployment-Prozess, mit dem der Code mit nur einem Befehl auf alle anderen Server verteilt werden kann (Backend-Bereich)</li>
+              </ul>
+            </ul>
+          </p>
+        </div>
+        <div id="what-makes-javascript-weird-and-awesome">
+          <h3>What Makes JavaScript Weird... and AWESOME</h3>
+          <p>5 things that make JavaScript weird... and awesome:</p>
+          <ul>
+            <li>First Class Functions</li>
+            <li>Event-Driven Environment</li>
+            <li>Closures</li>
+            <li>Scope</li>
+            <li>Context</li>
+          </ul>
+          <br>
+          <h4 id="what-makes-javascript-weird-and-awesome-part1">Part 1</h4>
+          <p>
+            <ul>
+              <li>Callback-Methoden werden verwendet, um Code der Übersicht halber zu kapseln</li>
+              <li>Diese Methoden werden aufgerufen, wenn eine Sequenz an Befehlen beendet wurde</li>
+              <li>Callback-Methoden können in JavaScript wie normale Variablen übergeben werden</li>
+              <li>Implementiere eine "normale" Methode:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+function add(first, second) {
+  console.log(first + second);
+}
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Test die Methode (noch ohne Callback-Methode): </li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+add(2, 3);
+add(4, 5);
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Implementiere eine Callback-Methode:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+function logDone() {
+  console.log("done");
+}
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Erweitere die normale Methode um die Callback-Methode und überprüfe, ob eine Callback-Methode übergeben wurde:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+function add(first, second, callback) {
+  console.log(first + second);
+  if(callback) {
+    callback();
+  }
+}
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Teste die Methode und übergebe einmal eine Callback-Methode und einmal nicht:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+add(2, 3, logDone);
+add(4, 5);
+</pre>
+                  </div>
+                </div>
+              </p>
+          </p>
+          <li>Folgendes Ergebnis sollte auf der Konsole erscheinen:</li>
+          <p>
+            <div class="row">
+              <div class="col-xs-10 col-xs-offset-1 col2">
+                <pre>
+> 5
+> done
+> 9
+</pre>
+              </div>
+            </div>
+          </p>
+          </ul>
+          <br>
+          <h4 id="what-makes-javascript-weird-and-awesome-part2">Part 2</h4>
+        </div>
+      </div>
+      </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    </main>
+
+    <div class="container">
+      <div class="footer navbar-fixed-bottom">
+        <div style="padding: 12px; background: #f5f5f5" id="footer-copyright" align="center"></div>
+      </div>
+    </div>
+  </body>
+  <script src="libs\jquery-3.2.1.min.js"></script>
+  <script type="text/javascript">
+    var d = new Date();
+    $(document).ready(function() {
+      $("#footer-copyright").html("Copyright (c) " + d.getFullYear() + " Marc Friedrich. All Rights Reserved.");
+    });
+  </script>
+  <script type="text/javascript">
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+
+</html>
