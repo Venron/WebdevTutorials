@@ -13,7 +13,7 @@
     <header>
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
-          <h2 align="center">Theoretics of Web Development</h2>
+          <h2 align="center" id="siteHead">Theoretics of Web Development</h2>
         </div>
       </div>
     </header>
@@ -30,6 +30,13 @@
           <ul>
             <li><a href="#what-makes-javascript-weird-and-awesome-part1">Part 1</a></li>
             <li><a href="#what-makes-javascript-weird-and-awesome-part2">Part 2</a></li>
+            <li><a href="#what-makes-javascript-weird-and-awesome-part3">Part 3</a></li>
+            <li><a href="#what-makes-javascript-weird-and-awesome-part4">Part 4</a></li>
+            <li><a href="#what-makes-javascript-weird-and-awesome-part5">Part 5</a></li>
+          </ul>
+          <li><a href="#">Nicht-kategorisierte Tipps</a></li>
+          <ul>
+            <li><a href="#html-value-elementteilen-veraendern">HTML-Value von Elementteilen verändern</a></li>
           </ul>
         </ol>
         <div id="how-the-internet-works-for-developers">
@@ -149,6 +156,224 @@ add(4, 5);
           </ul>
           <br>
           <h4 id="what-makes-javascript-weird-and-awesome-part2">Part 2</h4>
+          <p>
+            <ul>
+              <li>Event-Driven Environment: z.B. wenn JavaScript mithilfe einer First-Class Funktion auf einen Button-Klick reagiert</li>
+              <li>JavaScript an sich ist nicht schneller als andere Sprachen, es erscheint nur schneller, weil es eventgebunden ist. Das bedeutet, es kann zwar eine große Menge an Code laden, dieser wird aber im Speicher abgelegt und nur dann ausgeführt,
+                wenn das Event tatsächlich auftritt. Nur der Code der benötigt wird wird aus dem Speicher ausgeführt.</li>
+              <li>NodeJS: Die Anwendung läuft, wenn eine Page Request reinkommt, wird nur der Code ausgeführt, der mit dieser Page Request zu tun hat</li>
+              <li>Die Argumentenfunktion (z.b. bei <code>$("#btn1").click(function(){...})</code>) ist eine Callback-Funktion (wird nur aufgerufen, wenn sie benötigt wird).</li>
+              <li>Diese Eventgetriebenheit verursacht allerdings neue Probleme, die mit Techniken wie Closures, Scope oder Context behoben werden muss</li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="what-makes-javascript-weird-and-awesome-part3">Part 3</h4>
+          <p>
+            <ul>
+              <li>Closures, Scope und Context wurden wegen dem Event-Driven Environment erstellt</li>
+              <li>Closures:</li>
+              <ul>
+                <li>Behält den State und den Scope bei, nachdem es ausgeführt wurde</li>
+                <li>Beispiel: Inkrementierung einer Variable innerhalb eines Closures bei Button-Klick. Jedes Mal wenn der Button erneut geklickt wurde, wird die Variable um eins weiter inkrementiert</li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      <pre>
+$(document).ready(function() {
+  var a = 1;
+
+  // Klick 1: 1, Klick 2: 2, Klick n: n
+  $("#btn1").click(function() {
+    a++;
+    console.log(a);
+  });
+});
+</pre>
+                    </div>
+                  </div>
+                </p>
+                <li>JavaScript behält die Variable solange im Hauptspeicher, bis keine Referenz mehr auf die Variable existiert</li>
+                <li>Lösche den Event-Listener: <code>$("#btn1").off("click");</code></li>
+                <li>Der Speicherort, in dem diese Variablen gespeichert werden, heißt <strong>Closure</strong></li>
+              </ul>
+            </ul>
+          </p>
+          <br>
+          <h4 id="what-makes-javascript-weird-and-awesome-part4">Part 4</h4>
+          <p>
+            <ul>
+              <li>Wenn kein konkreter Scope definiert wurde, befindet sich man im Window-Scope. Definiere eine Variable <code>var a = 1;</code>. Gebe den Wert dieser Variable in der Konsole aus mit <code>window.a</code>. Die Ausgabe ist <code>1</code></li>
+              <li>Funktionen sind Child-Scopes, in denen wiederum Variablen mit dem gleichen Namen deklariert werden können, jedoch unabhängig von den Variablen des Window-Scopes sind</li>
+              <li>Variablen eines Scopes können folgendermaßen verändert werden:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+var a = 1;
+function foo() {
+  a = 2;
+}
+console.log(a); // ==> Ausgabe: 1
+</pre>
+                  </div>
+                </div>
+              </p>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+var a = 1;
+function foo() {
+  a = 2;
+}
+foo();
+console.log(a); // ==> Ausgabe: 2
+</pre>
+                  </div>
+                </div>
+              </p>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+function foo() {
+  a = 2;
+}
+console.log(a); // ==> Ausgabe: Error: a is undefined
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>So können globale Variablen mit Methoden nach eigenem Belieben gesetzt/modifiziert werden</li>
+              <li>Variable Pollution: Wenn anstatt <code>var a = 2;</code> die globale Variable verändert wird mit <code>a = 2</code>, anstatt nur eine Variable innerhalb eines Child-Scopes zu erzeugen</li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="what-makes-javascript-weird-and-awesome-part5">Part 5</h4>
+          <p>
+            <ul>
+              <li>Der Default-Kontext <code>this</code> ist von <code>window</code>, kann also auch mit <code>window.this</code> aufgerufen werden</li>
+              <li>Überprüfen lässt sich dies mit <code>console.log(this == window)</code>, was <code>true</code> zurückgibt</li>
+              <li>Wir können nun unseren eigenen Kontext implementieren:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+var obj = {
+  foo: function() {
+    console.log(obj); // ==> Object {foo: function}
+    console.log(this == obj); // ==> true
+    console.log(this == window); // ==> false
+  }
+}
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Die 3 Methoden, um in JavaScript den Kontext zu verändern sind: </li>
+              <ul>
+                <li><code>call()</code></li>
+                <li><code>apply()</code></li>
+                <li><code>bind()</code></li>
+              </ul>
+              <li><code>call()</code></li>
+              <ul>
+                <li>Wird verwendet, um Methoden mit einem anderen Kontext aufzurufen</li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      <pre>
+var obj = {
+  foo: function() {
+    console.log("this == obj: " + this == obj);
+    console.log("this == window: " + this == window);
+  }
+}
+
+obj.foo(); // this == obj: true
+           // this == window: false
+</pre>
+                    </div>
+                  </div>
+                </p>
+                <li>Aufruf mit <code>call()</code>:</li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      <pre>
+obj.foo.call(window); // this == obj: false
+                      // this == window: true
+</pre>
+                    </div>
+                  </div>
+                </p>
+                <li>Wird <code>call()</code> nach dem Kontextobjekt noch mehrere Argumente mitgegeben, werden diese als Funktionsargumente der eigentlich aufgerufenen Funktion betrachtet. Nehmen wir Funktion <code>function foo(one, two) {...}</code> an, können
+                  wir diese mit <code>obj.foo.call(window, 1, 2);</code> aufrufen</li>
+              </ul>
+              <li><code>apply()</code></li>
+              <ul>
+                <li><code>apply()</code> besitzt die selbe Funktionsweise wie <code>call()</code>, nur dass die Funktionsargumente als Array übergeben werden</li>
+                <li><code>apply()</code> kann wie folgt verwendet werden: <code>obj.foo.apply(window, [1, 2]);</code></li>
+              </ul>
+              <li><code>bind()</code></li>
+              <ul>
+                <li><code>bind()</code> führt die Funktion nicht aus, sondern returned eine <em>Bound function</em></li>
+                <li>Die zurückgegebene Funktion wird nun immer im übergebenen Kontext ausgeführt: </li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      <pre>
+var myBoundFoo = obj.foo.bind(window);
+myBoundFoo(); // Wird immer im Kontext "window" ausgeführt
+myBoundFoo();
+myBoundFoo();
+</pre>
+                    </div>
+                  </div>
+                </p>
+              </ul>
+              <li>Wenn nun beispielsweise <code>this</code> im Kontext von jQuery verwendet hat, referenziert <code>this</code> immer auf das Element, das z.B. angeklickt wurde</li>
+              <li>Beispiel: </li>
+              <ul>
+                <li>3 li's, die jeweils einen eigenen Clickcounter besitzen. Die Clickcounter-Zahl ist jeweils in einem <code>&lt;span&gt;&lt;/span&gt;</code> -Tag</li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      <pre>
+$(document).ready(function() {
+  $("li").click(function() {
+    var clickCount = parseInt($(this).find("span").html());
+    $(this).find("span").html(clickCount+1);
+  });
+});
+</pre>
+                    </div>
+                  </div>
+                </p>
+              </ul>
+            </ul>
+          </p>
+        </div>
+        <div id="nicht-kategorisierte-tipps">
+          <h3>Nicht-kategorisierte Tipps</h3>
+          <br>
+          <h4 id="html-value-elementteilen-veraendern">HTML-Value von Elementteilen verändern</h4>
+          <p>
+            <ul>
+              <li>Kapsle den Wert, der verändert werden soll (z.B. eine Zahl) innerhalb eines <code>&lt;span&gt;&lt;/span&gt;</code> -Tags. Falls es sich um einen speziellen werd handel, kann diesem noch eine ID oder Klasse zugeordnet werden</li>
+              <li>Hole den Wert per jQuery aus dem aktuellen Kontext (bspw. falls sich diese span innerhalb einer Liste befinden):</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+var val = parseInt($(this).find("li #myLi").html());
+$(this).find("li #myLi").html(newValue);
+</pre>
+                  </div>
+                </div>
+              </p>
+            </ul>
+          </p>
         </div>
       </div>
       </div>
@@ -185,7 +410,16 @@ add(4, 5);
 
     <div class="container">
       <div class="footer navbar-fixed-bottom">
-        <div style="padding: 12px; background: #f5f5f5" id="footer-copyright" align="center"></div>
+        <div style="padding: 12px; background: #f5f5f5">
+          <div class="row">
+            <div class="col-xs-2">
+              <a href="#siteHead" class="btn btn-secondary" style="padding: 0">Top</a>
+            </div>
+            <div class="col-xs-10" align="center">
+              <span align="right" id="footer-copyright"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
