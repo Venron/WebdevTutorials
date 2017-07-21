@@ -4,11 +4,6 @@ console.log($status);
 
 // Reihenfolge, in der geladen werden soll:
 // Profile, Tweets, (Mentioned) Friend
-// Funktion:
-//  1. Lade ein Profile
-//  2. Lade alle Tweets
-//  3. Lade den mentionedUser (also einen User) aus dem ersten Tweet anhand der in tweets.json hinterlegten ID
-//  4. In tweets ist die ID des mentionedUser 10 und in friend.json ist die User-ID auch 10
 $.ajax({
   type: "GET",
   url: "content/profile.json",
@@ -17,8 +12,8 @@ $.ajax({
     $("#profile-pre").html(JSON.stringify(profile));
     $.ajax({
       type: "GET",
-      url: "content/tweets.json?id=" + profile.id,  // Profil-ID wird nicht berücksichtigt, nur zu Demonstrationszwecken
-      success: function(tweets) {                   // Liefer alle Tweets zurück
+      url: "content/tweets.json?id=" + profile.id,
+      success: function(tweets) {
         $status.append("<li>loaded tweets</li>");
         $("#tweets-pre").html(JSON.stringify(tweets));
         $.ajax({

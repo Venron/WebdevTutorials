@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Python Web Development Theoretics</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <div class="jumbotron jumbotron-fluid" style="border-radius: 0">
+          <h2 align="center" id="siteHead">Python Web Development</h2>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h3>Structure</h3>
+        <ol>
+          <li><a href="#python-essentials">Python Essentials</a></li>
+          <li><a href="#django">Django</a></li>
+          <ol>
+            <li><a href="#erstellen-eines-neuen-django-projekts">Erstellen eines neuen Django Projekts</a></li>
+            <li><a href="#starten-des-django-webservers">Starten des Django Webservers</a></li>
+            <li><a href="#sqlite-setup">SQLite Setup</a></li>
+            <li><a href="#models-erstellen-und-migrieren">Models erstellen und migrieren</a></li>
+            <li><a href="#django-datenbank-api">Django Datenbank-API</a></li>
+            <li><a href="#admin-interface">Admin Interface</a></li>
+            <li><a href="#uebergabe-von-parametern">Übergabe von Parametern</a></li>
+            <li><a href="#erstellen-von-dynamischen-websites-mit-template">Erstellen von dynamischen Websites mit Templates</a></li>
+          </ol>
+        </ol>
+
+        <div>
+          <h3 id="python-essentials">Python Essentials</h3>
+          <br>
+        </div>
+        <div>
+          <h3 id="django">Django</h3>
+          <br>
+          <h4 id="erstellen-eines-neuen-django-projekts">Erstellen eines neuen Django Projekts</h4>
+          <p>
+            <ul>
+              <li>In PyCharm als neues Projekt erstellen</li>
+              <li>Speicherort und Name auswählen</li>
+              <li>Wenn nötig, das Häkchen bei "Admin" gesetzt lassen</li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="starten-des-django-webservers">Starten des Django Webserver</h4>
+          <p>
+            <ul>
+              <li>Starte den Server mit <code>py manage.py runserver</code></li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="sqlite-setup">SQLite Setup</h4>
+          <p>
+            <ul>
+              <li>Migriere die von Django mitgelieferten Apps in die SQLite Datenbank mit <code>py manage.py migrate</code></li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="models-erstellen-und-migrieren">Models erstellen und migrieren</h4>
+          <p>
+            <ul>
+              <li>Models werden in <code>models.py</code> definiert</li>
+              <li>Models haben die folgende Struktur:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+from django.db import models
+
+class Album(models.Model):
+  artist = models.CharField(max_length=250)
+  title = models.CharField(max_length=500)
+  genre = models.CharField(max_length=100)
+  logo = models.CharField(max_length=1000)
+
+class Song(models.Model):
+  album = models.ForeignKey(Album, on_delete=models.CASCADE)
+  file_typ = models.CharField(max_length=10)
+  title = models.CharField(max_length=250)
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Mit <code>models.ForeignKey(...)</code> können verschiedene Tabellen miteinander verknüpft werden. Hier werden z.B. automatische alle zugehörigen Songs gelöscht, die als Fremdschlüssel dem Primärschlüssel eines Albums besitzen</li>
+              <li>Die Models müssen anschließend in die Datenbank übertragen und die erstellten Tabellen mit dem Code in <code>models.py</code> verknüpft werden. Dazu wird wieder <code>manage.py</code> verwendet:</li>
+              <li>Mit <code>py manage.py makemigrations music</code> werden die Models der App "music" in der Datenbank erstellt</li>
+              <li>Mit <code>py manage.py sqlmigrate music 0001</code> kann das SQL-Skript angezeigt werden, mit dem die Models aus <code>models.py</code> erstellt wurden</li>
+              <li>Mit <code>py manage.py migrate</code> wird die neue App (music) mit der Datenbank verknüpft</li>
+              <li>Falls Models nachträglich geändert wurden, kann das Datenbankschema und die App-Verknüpfung mit den folgenden zwei Befehlen wieder auf den aktuellen Stand gebracht werden:</li>
+              <ul>
+                <li><code>py manage.py makemigrations</code> für die Anwendung der Änderungen auf die Datenbank</li>
+                <li><code>py manage.py migrate</code> um die Models in der Datenbank mit den Models aus der App zu verknüpfen</li>
+              </ul>
+            </ul>
+          </p>
+          <br>
+          <h4 id="django-datenbank-api">Django Datenbank-API</h4>
+          <p>
+            <ul>
+              <li>Mit Django kann direkt auf die Datenbank, die in <code>settings.py</code> angegeben wurde, über die API von Django zugegriffen werden</li>
+              <li>Der Zugriff erfolgt über die Django Shell. Diese wird mit <code>py manage.py shell</code> gestartet</li>
+              <li>Um Zugriff auf die Models zu haben, müssen diese erst importiert werden mit z.B. <code>from music.models import Album, Song</code></li>
+              <li>Die typisierten Objekte aus der Spaltenliste (besser: <code>QuerySet</code>) können mit <code>Album.objects.all()</code> ausgegeben werden</li>
+              <li>Ein neues Object kann erstellt werden mit <code>a = Album(attr1=val1, attr2=val2)</code></li>
+              <li>Alternativ können Objekte erstellt werden, indem diese leer initialisiert werden und anschließend mit Daten gefüllt werden, also <code>a = Album()</code> und anschließend <code>a.attr1 = val1</code> und <code>a.attr2 = val2</code></li>
+              <li>Das Objekt wird anschließend mit <code>a.save()</code> gespeichert</li>
+              <li>Wenn wir die Methode <code>Album.objects.all()</code> benutzen, wird lediglich die Liste mit nichtssagenden Elementen ausgegebebn. Wenn wir aber gleichzeitig die Daten dieser Objekte angezeigt bekommen wollen, müssen wir eine <code>__str__</code>                -Methode definieren. Diese wird direkt in der Model-Klasse implementiert und kann wie folgt aussehen:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+class Album(models.Model):
+  artist = models.CharField(max_length=250)
+  ...
+
+  def __str__(self):
+    return "Artist: " + self.artist + ", Title: " + self.title
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Die <code>__str__(self)</code> -Methode wird automatisch aufgerufen, wenn die Methode <code>Album.objects.all()</code> aufgerufen wird. Folgendermaßen sieht die Ausgabe aus: </li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+&lt;QuerySet [&lt;Album: Artist: ACDC, Title: Back to Black&gt;, &lt;Album: Artist: Jidenna, Title: Long Live The Chief&gt;]&gt;
+</pre>
+                  </div>
+                </div>
+              </p>
+            </ul>
+          </p>
+          <br>
+          <h4 id="admin-interface">Admin Interface</h4>
+          <p>
+            <ul>
+              <li>Mit <code>py manage.py createsuperuser</code> kann ein Administratorkonto für das Admin Interface angelegt werden. Damit kann man sich dann auf <code>/admin</code> einloggen</li>
+              <li>Will man ein eigene Model zum Admin Interface hinzufügen, muss das Skript <code>music/admin.py</code> folgendermaßen angepasst werden:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+from django.contrib import admin
+from .models import Album
+
+admin.site.register(Album)
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Nun wird im Admin Interface zusätzlich die Tabelle für <code>Album</code> angezeigt. Hier können bestehende Objekte verändert, gelöscht oder neue Objekte angelegt werden</li>
+            </ul>
+          </p>
+          <br>
+          <h4 id="uebergabe-von-parametern">Übergabe von Parametern</h4>
+          <p>
+            <ul>
+              <li>Für Parameter müssen neue Views in der <code>views.py</code> erstellt werden. Die Parameter werden wie folgt über RegExp an die View übergeben: </li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+urlpatterns = [
+  ...
+  url(r'^(?P&lt;album_id&gt;[0-9]+)/$', views.detail, name="detail"),
+]
+</pre>
+                  </div>
+                </div>
+              </p>
+              <li>Nun kann in der <code>views.py</code> der Parameter entgegengenommen werden:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+def detail(request, album_id):
+  return HttpResponse("&lt;h2&gt;Details for Album id " + str(album_id) + "&lt;/h2&gt;")
+                    </pre>
+                  </div>
+                </div>
+              </p>
+              <li>Es ist ebenfalls möglich, durch Zugriff auf die DB dynamische Seiten über die App zu erzeugen:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+from django.http import HttpResponse
+from .models import Album
+
+def index(request):
+  # Database access
+  all_albums = Album.objects.all()
+  html = ''
+  for album in all_albums:
+    url = "/music/" + str(album.id) + "/"
+    full_link = "&lt;a href=" + url + "&gt;" + album.title + "&lt;/a&gt;&lt;br&gt;"
+    html += full_link
+    return HttpResponse(html)
+</pre>
+                  </div>
+                </div>
+              </p>
+            </ul>
+          </p>
+          <br>
+          <h4 id="erstellen-von-dynamischen-websites-mit-template">Erstellen von dynamischen Websites mit Templates</h4>
+          <p>
+            <ul>
+              <li>Man kann mit <code>return HttpResponse('...')</code> einfachen HTML-Code zurückgeben, dieser ist aber nicht gestyled. Aus diesem Grund kann man Templates in HTML (und CSS und JavaScript) entwickeln und diese anschließend während der Laufzeit
+                mit den dynamischen Daten füllen</li>
+              <li>Dafür muss zuerst ein ganz normales HTML-Template erstellt werden</li>
+              <li>Dieses muss anschließend in dem Verzeichnis <code>&lt;app&gt;/templates/&lt;app name&gt;</code> abgelegt werden</li>
+              <li>Nun muss das Template geladen und der Kontext definiert werden. Dabei gilt zu beachten, dass nach der Django-Konvention in der Angabe des Template-Pfades <code>/templates</code> nicht explizit angegeben werden muss. Weiterhin ist es ebenfalls
+                Common Practive, wenn das Objekt für den Kontext <code>context</code> genannt wird</li>
+              <li>Um diese Operationen durchzuführen, muss zuerst der <code>loader</code> mit <code>from django.template import loader</code> importiert werden</li>
+              <li>Das Template kann mit <code>template = loader.get_template("music/index.html")</code> geladen werden</li>
+              <li>Der Kontext beschreibt die Objekte und Variablen (also: Daten) die später im Template verwendet werden können:</li>
+              <p>
+                <div class="row">
+                  <div class="col-xs-10 col-xs-offset-1 col2">
+                    <pre>
+context = {
+  'all_albums' : all_albums,
+}
+</pre>
+                  </div>
+                </div>
+                <li>Es können mehrere Objekte als Kontext übergeben werden</li>
+                <li>Das Template kann nun wie folgt mit den Daten befüllt werden:</li>
+                <p>
+                  <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col2">
+                      &lt; &gt;
+                      <pre>
+...
+&lt;div class="container"&gt;&lt;/div&gt;
+{% if all_albums %}
+  &lt;ul&gt;
+    {% for album in all_albums %}
+    &lt;li&gt;&lt;a href="/music/{{ album.id }}/"&gt; {{ album.title }}&lt;/a&gt;&lt;li&gt;
+    {% endfor %}
+  &lt;/ul&gt;
+  {% else %}
+    &lt;h3&gt;You don't have any albums&lt;/h3&gt;
+  {% endif %}
+&lt;/div&gt;
+</pre>
+                    </div>
+                  </div>
+                </p>
+                <li>Der Tag <code>{% ... %}</code> wird für Codeteile verwendet. Merke, dass dieser Code auch immer mit z.B. <code>{% endfor %}</code> oder <code>{% endif %}</code> geschlossen werden muss</li>
+                <li>Der Tag <code> {{ ... }}</code> wird für Variablen verwendet</li>
+              </p>
+            </ul>
+          </p>
+        </div>
+      </div>
+    </main>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+
+</html>
